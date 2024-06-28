@@ -15,7 +15,7 @@ jobs:
             const body = issue.body
            
             // Extract the tag ID from the body
-            const tagMatch = body.match(/Tags: (\d+)/)
+            const tagMatch = body.match(/Tags:\s*\n(\d+)/)
             if (tagMatch) {
               const tagId = tagMatch[1]
              
