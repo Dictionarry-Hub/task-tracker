@@ -1,0 +1,50 @@
+name: Transfer Issue
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  transfer-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Transfer issue
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.PERSONAL_ACCESS_TOKEN}}
+          script: |
+            const issue = context.payload.issue
+            const body = issue.body
+            
+            // Extract the tag ID from the body
+            const tagMatch = body.match(/Tags: (\d+)/)
+            if (tagMatch) {
+              const tagId = tagMatch[1]
+              
+              // Map tag IDs to repo names
+              const tagToRepo = {
+                '1256083018414686279': 'profilarr',
+                '1256082972403171338': 'website',
+                '1256083055853043854': 'database',
+                '1256083006590947379': 'docs',
+                '1256082994452762685': '.github'
+              }
+              
+              const destRepo = tagToRepo[tagId]
+              if (destRepo) {
+                try {
+                  await github.rest.issues.transfer({
+                    owner: 'Dictionarry-Hub',
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    new_repo: destRepo
+                  })
+                  console.log(`Issue transferred to ${destRepo}`)
+                } catch (error) {
+                  console.error(`Error transferring issue: ${error}`)
+                }
+              } else {
+                console.log(`No matching repo found for tag ID: ${tagId}`)
+              }
+            } else {
+              console.log('No tag found in issue body')
+            }
