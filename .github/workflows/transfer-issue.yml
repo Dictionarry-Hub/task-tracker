@@ -31,15 +31,27 @@ jobs:
               const destRepo = tagToRepo[tagId]
               if (destRepo) {
                 try {
-                  await github.rest.issues.transfer({
+                  // Create a new issue in the destination repo
+                  const newIssue = await github.rest.issues.create({
                     owner: 'Dictionarry-Hub',
+                    repo: destRepo,
+                    title: issue.title,
+                    body: `${issue.body}\n\nTransferred from ${context.repo.owner}/${context.repo.repo}#${issue.number}`,
+                    labels: issue.labels.map(label => label.name)
+                  })
+                  
+                  // Close the original issue
+                  await github.rest.issues.update({
+                    owner: context.repo.owner,
                     repo: context.repo.repo,
                     issue_number: issue.number,
-                    new_repo: destRepo
+                    state: 'closed',
+                    state_reason: 'completed'
                   })
-                  console.log(`Issue transferred to ${destRepo}`)
+                  
+                  console.log(`Issue transferred to ${destRepo}. New issue number: ${newIssue.data.number}`)
                 } catch (error) {
-                  console.error(`Error transferring issue: ${error}`)
+                  console.error(`Error transferring issue: ${error.message}`)
                 }
               } else {
                 console.log(`No matching repo found for tag ID: ${tagId}`)
