@@ -65,14 +65,4 @@ jobs:
             }
            
             // Log the entire issue body for debugging
-            console.log('Issue body:', body)
-
-This modification should resolve the syntax error. The key changes are:
-
-1. We've changed the `tagToRepo` object to use individual tag IDs as keys, with the repository name as the value. This avoids the syntax issue with array keys.
-
-2. We've simplified the repository lookup to directly use `tagToRepo[tagId]` instead of using `Object.entries().find()`.
-
-These changes should make the script compatible with the GitHub Actions environment and resolve the syntax error you encountered. The functionality remains the same: it will match the tag ID to the correct repository and transfer the issue accordingly.
-
-Would you like me to explain any part of this updated script in more detail?
+            console.log('Issue body:', body)W
