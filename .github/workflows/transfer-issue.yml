@@ -11,14 +11,14 @@ jobs:
         with:
           github-token: ${{secrets.PERSONAL_ACCESS_TOKEN}}
           script: |
-            const issue = context.payload.issue;
-            const body = issue.body;
-            
+            const issue = context.payload.issue
+            const body = issue.body
+           
             // Extract the tag ID from the body
-            const tagMatch = body.match(/Tags:\s*\n(\d+)/);
+            const tagMatch = body.match(/Tags:\s*\n(\d+)/)
             if (tagMatch) {
-              const tagId = tagMatch[1];
-              
+              const tagId = tagMatch[1]
+             
               // Map tag IDs to repo names
               const tagToRepo = {
                 '1257151213439549561': 'profilarr',
@@ -29,9 +29,9 @@ jobs:
                 '1257153547225534655': 'database',
                 '1257151231663673446': 'docs',
                 '1257153587004309535': 'docs'
-              };
-              
-              const destRepo = tagToRepo[tagId];
+              }
+             
+              const destRepo = tagToRepo[tagId]
               if (destRepo) {
                 try {
                   // Create a new issue in the destination repo
@@ -41,8 +41,8 @@ jobs:
                     title: issue.title,
                     body: `${issue.body}\n\nTransferred from ${context.repo.owner}/${context.repo.repo}#${issue.number}`,
                     labels: issue.labels.map(label => label.name)
-                  });
-                  
+                  })
+                 
                   // Close the original issue
                   await github.rest.issues.update({
                     owner: context.repo.owner,
@@ -50,18 +50,18 @@ jobs:
                     issue_number: issue.number,
                     state: 'closed',
                     state_reason: 'completed'
-                  });
-                  
-                  console.log(`Issue transferred to ${destRepo}. New issue number: ${newIssue.data.number}`);
+                  })
+                 
+                  console.log(`Issue transferred to ${destRepo}. New issue number: ${newIssue.data.number}`)
                 } catch (error) {
-                  console.error(`Error transferring issue: ${error.message}`);
+                  console.error(`Error transferring issue: ${error.message}`)
                 }
               } else {
-                console.log(`No matching repo found for tag ID: ${tagId}`);
+                console.log(`No matching repo found for tag ID: ${tagId}`)
               }
             } else {
-              console.log('No tag found in issue body');
+              console.log('No tag found in issue body')
             }
-            
+           
             // Log the entire issue body for debugging
-            console.log('Issue body:', body);
+            console.log('Issue body:', body)
