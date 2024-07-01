@@ -21,16 +21,17 @@ jobs:
              
               // Map tag IDs to repo names
               const tagToRepo = {
-                ['1257151213439549561', '1257153568000184371']: 'profilarr',
-                ['1257151164395552930', '1257153522340991116']: 'website',
-                ['1257151182250573846', '1257153547225534655']: 'database',
-                ['1257151231663673446', '1257153587004309535']: 'docs'
+                '1257151213439549561': 'profilarr',
+                '1257153568000184371': 'profilarr',
+                '1257151164395552930': 'website',
+                '1257153522340991116': 'website',
+                '1257151182250573846': 'database',
+                '1257153547225534655': 'database',
+                '1257151231663673446': 'docs',
+                '1257153587004309535': 'docs'
               }
              
-              // Find the matching repository
-              const destRepo = Object.entries(tagToRepo).find(([ids, repo]) => 
-                ids.split(',').includes(tagId)
-              )?.[1]
+              const destRepo = tagToRepo[tagId]
 
               if (destRepo) {
                 try {
@@ -65,3 +66,13 @@ jobs:
            
             // Log the entire issue body for debugging
             console.log('Issue body:', body)
+
+This modification should resolve the syntax error. The key changes are:
+
+1. We've changed the `tagToRepo` object to use individual tag IDs as keys, with the repository name as the value. This avoids the syntax issue with array keys.
+
+2. We've simplified the repository lookup to directly use `tagToRepo[tagId]` instead of using `Object.entries().find()`.
+
+These changes should make the script compatible with the GitHub Actions environment and resolve the syntax error you encountered. The functionality remains the same: it will match the tag ID to the correct repository and transfer the issue accordingly.
+
+Would you like me to explain any part of this updated script in more detail?
